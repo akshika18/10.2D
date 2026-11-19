@@ -1,0 +1,8 @@
+Install these libraries in Arduino IDE:
+
+WiFiNINA
+ArduinoHttpClient
+MFRC522
+Servo
+U8g2
+ArduinoJson

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f7f6">
+  <title>MediTrack — Care dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand"><div class="brand-mark">✳</div><div><b>MediTrack</b><small>Care, made visible.</small></div></div>
+      <nav>
+        <button class="nav-item active" data-view="overview">◫ <span>Overview</span></button>
+        <button class="nav-item" data-view="patients">♡ <span>Patients</span></button>
+        <button class="nav-item" data-view="history">◷ <span>Dose history</span></button>
+        <button class="nav-item" data-view="settings">⚙ <span>Settings</span></button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="device-indicator"><span class="pulse"></span><div><b>Dispenser system</b><small>Cloud-connected dashboard</small></div></div>
+        <button id="signOut" class="text-button">Sign out ↗</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><p class="eyebrow" id="todayLabel">CARE OVERVIEW</p><h1 id="pageTitle">Good day.</h1></div>
+        <div class="top-actions"><span class="timezone-pill" id="timezoneLabel">Timezone</span><div class="avatar">M</div></div>
+      </header>
+
+      <section id="loginPanel" class="login-panel hidden">
+        <div class="login-card">
+          <div class="brand-mark large">✳</div><p class="eyebrow">PRIVATE CARE SPACE</p>
+          <h2>Welcome back.</h2><p class="muted">Sign in to view patient medicine records.</p>
+          <form id="loginForm">
+            <label>Email<input id="email" type="email" required autocomplete="username" placeholder="you@example.com"></label>
+            <label>Password<input id="password" type="password" required autocomplete="current-password" placeholder="Your password"></label>
+            <button class="primary-btn" type="submit">Sign in <span>→</span></button>
+            <p id="loginError" class="error"></p>
+          </form>
+        </div>
+      </section>
+
+      <section id="dashboard" class="hidden">
+        <div class="welcome-row"><div><p class="eyebrow">TODAY AT A GLANCE</p><h2>Medicine, thoughtfully managed.</h2><p class="muted">A live record of scheduled dispensing activity.</p></div><button class="ghost-btn" id="refreshBtn">↻ Refresh</button></div>
+        <div class="stats-grid">
+          <article class="stat-card"><span class="stat-icon lavender">◷</span><p>Today's doses</p><strong id="totalDoses">0</strong><small>Across both patients</small></article>
+          <article class="stat-card"><span class="stat-icon mint">✓</span><p>Completed</p><strong id="completedDoses">0</strong><small>Confirmed servo cycles</small></article>
+          <article class="stat-card"><span class="stat-icon peach">!</span><p>Needs attention</p><strong id="attentionDoses">0</strong><small>Missed or incomplete</small></article>
+        </div>
+        <div class="section-heading"><div><p class="eyebrow">PATIENT MONITORING</p><h2>Patient status</h2></div><span class="muted small" id="lastUpdated">—</span></div>
+        <div id="patientCards" class="patient-grid"></div>
+        <div class="bottom-grid">
+          <section class="panel"><div class="panel-heading"><div><p class="eyebrow">RECENT ACTIVITY</p><h3>Latest dose events</h3></div><button class="text-button" data-go="history">View all →</button></div><div id="recentEvents" class="event-list"></div></section>
+          <section class="panel"><div class="panel-heading"><div><p class="eyebrow">DEVICE</p><h3>System notes</h3></div><span class="soft-tag">Prototype</span></div><div class="notice"><span>ⓘ</span><p>Dashboard records RFID-authorized dispensing and servo completion. It cannot verify that medicine was swallowed.</p></div><div class="notice"><span>⌁</span><p>If the dispenser is offline, check the device and use your manual care process.</p></div></section>
+        </div>
+      </section>
+
+      <section id="patientsView" class="hidden view-panel">
+        <div class="welcome-row"><div><p class="eyebrow">PEOPLE IN YOUR CARE</p><h2>Patients</h2><p class="muted">Choose a patient to inspect their morning and evening record.</p></div></div>
+        <div id="patientDetailCards" class="patient-grid"></div>
+      </section>
+
+      <section id="historyView" class="hidden view-panel">
+        <div class="welcome-row"><div><p class="eyebrow">AUDIT TRAIL</p><h2>Dose history</h2><p class="muted">Every authorized scan and servo result.</p></div></div>
+        <section class="panel"><div id="historyList" class="event-list"></div></section>
+      </section>
+
+      <section id="settingsView" class="hidden view-panel">
+        <div class="welcome-row"><div><p class="eyebrow">CONFIGURATION</p><h2>Care settings</h2><p class="muted">Set patient identities, RFID cards and permitted dose windows.</p></div></div>
+        <div class="settings-grid">
+          <section class="panel settings-panel"><div class="panel-heading"><div><p class="eyebrow">PATIENT PROFILES</p><h3>Identity & RFID</h3></div></div>
+            <form id="settingsForm">
+              <div class="patient-settings" id="settingsPatients"></div>
+              <div class="form-footer"><label class="timezone-field">System timezone<input id="timezoneInput" value="Asia/Kolkata" placeholder="Asia/Kolkata"></label><button class="primary-btn" type="submit">Save settings <span>→</span></button></div>
+              <p class="muted tiny">Timezone is configured as a Vercel environment variable (APP_TIMEZONE). Changing it here is a reminder only; update Vercel and redeploy to apply it.</p>
+              <p id="settingsMessage" class="success"></p>
+            </form>
+          </section>
+          <section class="panel"><div class="panel-heading"><div><p class="eyebrow">DOSE WINDOWS</p><h3>How deadlines work</h3></div></div><div class="help-block"><b>Morning</b><p>Scans are accepted from the morning start time through the morning deadline.</p></div><div class="help-block"><b>Evening</b><p>Scans are accepted from the evening start time through the evening deadline.</p></div><div class="help-block warning"><b>After the deadline</b><p>The system sends an overdue alert and rejects late automatic dispensing. Follow the clinician's late-dose instructions.</p></div><div class="help-block"><b>Duplicate protection</b><p>Only one dose event per patient, slot and local calendar day can be authorized.</p></div></section>
+        </div>
+      </section>
+      <footer>MEDiTRACK <span>·</span> A prototype for supervised medication routines</footer>
+    </main>
+  </div>
+  <div id="toast" class="toast"></div>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

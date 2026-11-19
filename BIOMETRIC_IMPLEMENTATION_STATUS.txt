@@ -1,0 +1,5 @@
+Biometric sensor implementation status
+
+No fingerprint sensor code was present in the available final Arduino firmware or website source package. The available final source uses the MFRC522 RFID reader for patient identification.
+
+The firmware package does not claim to support fingerprint enrollment or fingerprint matching. To add it, the exact fingerprint sensor model and its communication interface must be confirmed, then its library and patient template mapping can be integrated and tested.
